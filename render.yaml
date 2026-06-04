@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: rachacontaapi
+    runtime: java
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/rachacontaapi-0.0.1-SNAPSHOT.jar
+    envVars:
+      - key: DATABASE_URL
+        value: jdbc:postgresql://dpg-d8gaokvlk1mc73emejlg-a.oregon-postgres.render.com/rachacontaapi
+      - key: DATABASE_USERNAME
+        value: rachacontaapi_user
+      - key: DATABASE_PASSWORD
+        value: qfCJ2QXr48H7dLpQHwZsKXtSsv5Wy4BP
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRATION_MS
+        value: 86400000
