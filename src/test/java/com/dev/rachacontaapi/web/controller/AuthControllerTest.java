@@ -65,4 +65,32 @@ class AuthControllerTest {
                         .content("{}"))
                 .andExpect(r -> assertThat(r.getResponse().getStatus()).isIn(401, 403));
     }
+
+    @Test
+    @DisplayName("Login com senha correta retorna 200 e token")
+    void loginValidoRetornaToken() throws Exception {
+        mvc.perform(post("/api/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json("login@teste.com")));
+
+        mvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"login@teste.com\",\"password\":\"123456\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").isNotEmpty())
+                .andExpect(jsonPath("$.email").value("login@teste.com"));
+    }
+
+    @Test
+    @DisplayName("Login com senha errada é bloqueado")
+    void loginSenhaErradaBloqueado() throws Exception {
+        mvc.perform(post("/api/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json("senhaerrada@teste.com")));
+
+        mvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"senhaerrada@teste.com\",\"password\":\"errada\"}"))
+                .andExpect(r -> assertThat(r.getResponse().getStatus()).isIn(401, 403));
+    }
 }
